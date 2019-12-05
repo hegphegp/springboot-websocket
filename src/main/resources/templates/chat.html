@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>webIM</title>
+    <link rel="stylesheet" href="static/js/layui/css/layui.css" media="all">
+</head>
+<body style="background: #e2e2e2">
+<noscript>
+    <h2>很抱歉,您的浏览器不支持JavaScript</h2>
+</noscript>
+<script src="static/js/layui/layui.js"></script>
+<script th:inline="javascript">
+    var init = [# th:utext="${mine}"/];
+
+    layui.use('layim', function(layim){
+        layim.config({
+            init: init
+            ,members: {
+                url: ''
+                ,type: 'get'
+                ,data: {}
+            }
+            ,uploadImage: {
+                url: ''
+                ,type: 'post'
+            }
+            ,uploadFile: {
+                url: ''
+                ,type: 'post'
+            }
+        });
+    });
+
+</script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+</body>
+</html>
