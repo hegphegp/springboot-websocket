@@ -30,6 +30,47 @@
                 ,type: 'post'
             }
         });
+
+        layim.on('sendMessage', function(res){
+            var to = res.to;
+
+            if ("friend" === to.type) {
+
+                stompClient.send("/app/chat.private", {}, JSON.stringify({
+                    type: 'chatMessage'
+                    ,data: res
+                }));
+            } else if ("group" === to.type) {
+
+                stompClient.send("/app/chat.group", {}, JSON.stringify({
+                    type: 'chatMessage'
+                    ,data: res
+                }));
+            }
+        });
+
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, onConnected, onError);
+
+        function onConnected() {
+            console.log("连接成功");
+            stompClient.subscribe('/user/topic/chat', onMessageReceived);
+            // 写死监听一个group 1000
+            stompClient.subscribe('/topic/group1000', onMessageReceived);
+        }
+
+        function onMessageReceived(payload) {
+            var message = JSON.parse(payload.body);
+            if (message.username !== init.mine.username) {
+                layim.getMessage(message);
+            }
+        }
+
+        function onError(error) {
+            console.log(error);
+        }
     });
 
 </script>

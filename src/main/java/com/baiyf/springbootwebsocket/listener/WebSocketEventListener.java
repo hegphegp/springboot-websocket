@@ -32,11 +32,7 @@ public class WebSocketEventListener {
         if(username != null) {
             logger.info("User Disconnected : " + username);
 
-            SendMessageBean chatMessage = new SendMessageBean();
-            chatMessage.setType(SendMessageBean.MessageType.LEAVE);
-            chatMessage.setSender(username);
-
-            messagingTemplate.convertAndSend("/topic/public", chatMessage);
+            messagingTemplate.convertAndSend("/topic/public", "");
         }
     }
 }

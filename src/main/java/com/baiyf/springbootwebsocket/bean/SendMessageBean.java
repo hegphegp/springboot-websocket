@@ -2,21 +2,15 @@ package com.baiyf.springbootwebsocket.bean;
 
 public class SendMessageBean {
 
-    private MessageType type;
+    private String type;
 
     private DataBean data;
 
-    public enum MessageType {
-        CHAT,
-        JOIN,
-        LEAVE
-    }
-
-    public MessageType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(MessageType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
