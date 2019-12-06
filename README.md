@@ -4,34 +4,28 @@
 springboot 结合 shiro + layim + websocket 实现的简易的聊天示例。仅实现了 单聊 和 私聊
 
 #### 软件架构
-软件架构说明
-
+springboot   
+layim  
+layui  
+spring-weboscket  
+shiro
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  git clone https://gitee.com/nickbai/springboot-websocket.git
+2.  idea 代开项目
+3.  运行，并访问 http://localhost:8080  
+4. 打开两个浏览器 分别登录  
+    用户名：jack  
+    密码：admin  
+
+    用户名：tom  
+    密码：admin
+  
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 码云特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1、本系统未采用数据库，只是写死了两个用户 jack 和 tom 以及 写死了一个 分组，分组id 是 1000   
+2、群发消息这里只是为了演示广播的使用，实际使用中，还是建议维护在线的群组用户列表，并循环一一发送。  
+3、layim 是付费资源，商用的话，还是建议您去授权  
+4、看源码，还是建议您一一了解 架构中提到的项目，最少看一下手册
