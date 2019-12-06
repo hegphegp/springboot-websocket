@@ -12,9 +12,9 @@ shiro
 
 #### 安装教程
 
-1.  git clone https://gitee.com/nickbai/springboot-websocket.git
-2.  idea 代开项目
-3.  运行，并访问 http://localhost:8080  
+1. git clone https://gitee.com/nickbai/springboot-websocket.git
+2. idea 代开项目
+3. 运行，并访问 http://localhost:8080  
 4. 打开两个浏览器 分别登录  
     用户名：jack  
     密码：admin  
