@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.apache.shiro.subject.Subject;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,14 @@ public class ChatController {
     private SimpMessagingTemplate messagingTemplate;
 
     @RequestMapping("/")
-    public String index() {
-
+    public String index(HttpServletRequest request) {
+        //request.setAttribute
+        String basePath = (String) request.getAttribute("basePath");
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
-            return "redirect:/chat";
+            return "redirect:"+basePath+"/chat";
         } else {
-            return "redirect:/login";
+            return "redirect:"+basePath+"/login";
         }
     }
 

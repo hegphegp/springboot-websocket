@@ -1,6 +1,5 @@
 package com.baiyf.springbootwebsocket.listener;
 
-import com.baiyf.springbootwebsocket.bean.SendMessageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,8 @@ public class WebSocketEventListener {
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if(username != null) {
             logger.info("User Disconnected : " + username);
-
             messagingTemplate.convertAndSend("/topic/public", "");
         }
     }
+
 }

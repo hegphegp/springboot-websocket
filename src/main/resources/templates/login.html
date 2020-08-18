@@ -30,7 +30,7 @@
         var layer = layui.layer;
 
         form.on('submit(formDemo)', function(data){
-            $.post("/login", data.field, function (res) {
+            $.post("login", data.field, function (res) {
                 if (0 == res.code) {
                     layer.msg(res.msg);
                     setTimeout(function () {

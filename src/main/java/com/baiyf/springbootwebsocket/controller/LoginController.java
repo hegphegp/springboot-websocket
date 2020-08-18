@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +19,9 @@ import java.util.Map;
 public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String defaultLogin (Model model) {
+    public String defaultLogin (HttpServletRequest request, Model model) {
         // 已经登录过了
+        String basePath = (String) request.getAttribute("basePath");
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
             return "redirect:/chat";

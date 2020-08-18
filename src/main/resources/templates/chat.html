@@ -36,13 +36,13 @@
 
             if ("friend" === to.type) {
 
-                stompClient.send("/app/chat.private", {}, JSON.stringify({
+                stompClient.send("app/chat.private", {}, JSON.stringify({
                     type: 'chatMessage'
                     ,data: res
                 }));
             } else if ("group" === to.type) {
 
-                stompClient.send("/app/chat.group", {}, JSON.stringify({
+                stompClient.send("app/chat.group", {}, JSON.stringify({
                     type: 'chatMessage'
                     ,data: res
                 }));
@@ -52,13 +52,15 @@
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, onConnected, onError);
+        stompClient.connect({
+            'Authorization': '22222'
+        }, onConnected, onError);
 
         function onConnected() {
             console.log("连接成功");
-            stompClient.subscribe('/user/topic/chat', onMessageReceived);
+            stompClient.subscribe('user/topic/chat', onMessageReceived);
             // 写死监听一个group 1000
-            stompClient.subscribe('/topic/group1000', onMessageReceived);
+            stompClient.subscribe('topic/group1000', onMessageReceived);
         }
 
         function onMessageReceived(payload) {
@@ -69,6 +71,7 @@
         }
 
         function onError(error) {
+            console.log("链接失败")
             console.log(error);
         }
     });
