@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.apache.shiro.subject.Subject;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +55,13 @@ public class ChatController {
         tomInfo.setAvatar("static/images/tom.jpg");
         tomInfo.setStatus("online");
 
+        UserBean mikeInfo = new UserBean();
+        mikeInfo.setUsername("mike");
+        mikeInfo.setId(3);
+        mikeInfo.setSign("我是mike");
+        mikeInfo.setAvatar("static/images/group.jpg");
+        mikeInfo.setStatus("online");
+
         List<UserBean> friendList = new ArrayList<>();
         List<FriendBean> friendBeanList = new ArrayList<>();
         List<GroupBean> groupList = new ArrayList<>();
@@ -75,12 +80,16 @@ public class ChatController {
         friend.setId(100);
 
         if ("jack".equals(userName)) {
-
             friendList.add(tomInfo);
+            friendList.add(mikeInfo);
             infoMap.setMine(jackInfo);
-        } else {
-
+        } else if ("mike".equals(userName)){
             friendList.add(jackInfo);
+            friendList.add(tomInfo);
+            infoMap.setMine(mikeInfo);
+        } else if ("tom".equals(userName)){
+            friendList.add(jackInfo);
+            friendList.add(mikeInfo);
             infoMap.setMine(tomInfo);
         }
 
@@ -129,6 +138,15 @@ public class ChatController {
         chatMsg.setFromid(msg.getData().getMine().getId());
         chatMsg.setTimestamp(System.currentTimeMillis());
 
-        messagingTemplate.convertAndSendToUser(msg.getData().getTo().getName(), "topic/chat", chatMsg);
+        /**
+         * 服务端推送消息到指定用户得客户端
+         * 例如以下将会推送到
+         * 如果设置了setUserDestinationPrefix("/user")，因此推送到/user/msg.getData().getTo().getName()/topic/chat
+         * 如果设置了setUserDestinationPrefix("/destination/prefix")，因此推送到/destination/prefix/msg.getData().getTo().getName()/topic/chat
+         * 如果没有设置setUserDestinationPrefix()，则默认前端为user，将会推送到/user/msg.getData().getTo().getName()/topic/chat
+         * 客户端订阅/userTest/topic/chat将会收到服务端推送得消息
+         */
+        messagingTemplate.convertAndSendToUser(msg.getData().getTo().getName(), "/topic/chat", chatMsg);
+//        messagingTemplate.convertAndSend("/topic/group1000", chatMsg);
     }
 }

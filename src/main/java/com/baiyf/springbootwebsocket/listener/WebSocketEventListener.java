@@ -1,6 +1,5 @@
 package com.baiyf.springbootwebsocket.listener;
 
-import com.baiyf.springbootwebsocket.bean.SendMessageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
+
     }
 
     @EventListener

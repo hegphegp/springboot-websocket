@@ -47,8 +47,7 @@ public class ShiroConfig {
 
     @Bean
     public CustomRealm customRealm() {
-        CustomRealm customRealm = new CustomRealm();
-        return customRealm;
+        return new CustomRealm();
     }
 
     @Bean
