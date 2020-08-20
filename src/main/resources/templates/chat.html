@@ -10,57 +10,67 @@
     <h2>很抱歉,您的浏览器不支持JavaScript</h2>
 </noscript>
 <script src="static/js/layui/layui.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
 <script th:inline="javascript">
     var init = [# th:utext="${mine}"/];
 
-    layui.use('layim', function(layim){
-        layim.config({
-            init: init
-            ,members: {
-                url: ''
-                ,type: 'get'
-                ,data: {}
-            }
-            ,uploadImage: {
-                url: ''
-                ,type: 'post'
-            }
-            ,uploadFile: {
-                url: ''
-                ,type: 'post'
+    layui.use(['layim','jquery'], function(layim) {
+        var basePath = "";
+        var $ = layui.jquery;
+        var stompClient;
+        $.get("getBasePath", {}, function (res) {
+            if (0 == res.code) {
+                basePath = res.data;
+                layim.config({
+                    init: init,
+                    members: {
+                        url: '',
+                        type: 'get',
+                        data: {}
+                    },
+                    uploadImage: {
+                        url: '',
+                        type: 'post'
+                    },
+                    uploadFile: {
+                        url: '',
+                        type: 'post'
+                    }
+                });
+
+                layim.on('sendMessage', function(res){
+                    var to = res.to;
+                    if ("friend" === to.type) {
+                        stompClient.send("/app/chat.private", {}, JSON.stringify({
+                            type: 'chatMessage',
+                            data: res
+                        }));
+                    } else if ("group" === to.type) {
+                        stompClient.send("/app/chat.group", {}, JSON.stringify({
+                            type: 'chatMessage',
+                            data: res
+                        }));
+                    }
+                });
+
+                var socket = new SockJS(basePath+'/ws');
+                stompClient = Stomp.over(socket);
+
+                stompClient.connect({
+                    'Authorization': '22222'
+                }, onConnected, onError);
             }
         });
-
-        layim.on('sendMessage', function(res){
-            var to = res.to;
-
-            if ("friend" === to.type) {
-
-                stompClient.send("app/chat.private", {}, JSON.stringify({
-                    type: 'chatMessage'
-                    ,data: res
-                }));
-            } else if ("group" === to.type) {
-
-                stompClient.send("app/chat.group", {}, JSON.stringify({
-                    type: 'chatMessage'
-                    ,data: res
-                }));
-            }
-        });
-
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({
-            'Authorization': '22222'
-        }, onConnected, onError);
 
         function onConnected() {
             console.log("连接成功");
-            stompClient.subscribe('user/topic/chat', onMessageReceived);
+            var username = localStorage.getItem("username")
+            console.log("===>>>>>>>>"+'/user/'+username+'/topic/chat')
+            stompClient.subscribe('/user/'+username+'/topic/chat', onMessageReceived);
             // 写死监听一个group 1000
-            stompClient.subscribe('topic/group1000', onMessageReceived);
+            console.log("===>>>>>>>>"+'/topic/group1000')
+            stompClient.subscribe('/topic/group1000', onMessageReceived);
         }
 
         function onMessageReceived(payload) {
@@ -77,7 +87,5 @@
     });
 
 </script>
-<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
-<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
 </body>
 </html>

@@ -8,6 +8,15 @@ public class ResponseBean {
 
     private Object msg;
 
+    public ResponseBean() {
+    }
+
+    public ResponseBean(int code, Object data, Object msg) {
+        this.code = code;
+        this.data = data;
+        this.msg = msg;
+    }
+
     public int getCode() {
         return code;
     }

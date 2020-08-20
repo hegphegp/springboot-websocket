@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.baiyf.springbootwebsocket.bean.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.apache.shiro.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class ChatController {
 
     @RequestMapping("/")
     public String index(HttpServletRequest request) {
-        //request.setAttribute
         String basePath = (String) request.getAttribute("basePath");
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
@@ -98,11 +96,10 @@ public class ChatController {
     }
 
     @MessageMapping("/chat.group")
-    @SendTo("/topic/group1000")
-    public ChatMessageBean sendGroupMessage(@Payload SendMessageBean msg) {
-
+    // 拼接 WebSocketMessageBrokerConfigurer.configureMessageBroker方法的registry.setApplicationDestinationPrefixes("/app")前缀组成完整的路径 /app/chat.group
+//    @SendTo("/topic/group1000") // @SendTo注解写的是全路径, 不存在拼接路径
+    public void sendGroupMessage(@Payload SendMessageBean msg) {
         ChatMessageBean groupMsg = new ChatMessageBean();
-
         groupMsg.setUsername(msg.getData().getMine().getUsername());
         groupMsg.setAvatar(msg.getData().getMine().getAvatar());
         groupMsg.setId(1000);
@@ -112,15 +109,13 @@ public class ChatController {
         groupMsg.setMine(false);
         groupMsg.setFromid(msg.getData().getMine().getId());
         groupMsg.setTimestamp(System.currentTimeMillis());
-
-        return groupMsg;
+        // messagingTemplate.convertAndSend写的是全路径, 不存在拼接路径
+        messagingTemplate.convertAndSend("/topic/group1000", groupMsg);
     }
 
     @MessageMapping("/chat.private")
     public void sendPrivateMessage(@Payload SendMessageBean msg) {
-
         ChatMessageBean chatMsg = new ChatMessageBean();
-
         chatMsg.setUsername(msg.getData().getMine().getUsername());
         chatMsg.setAvatar(msg.getData().getMine().getAvatar());
         chatMsg.setId(msg.getData().getMine().getId());
@@ -130,7 +125,6 @@ public class ChatController {
         chatMsg.setMine(false);
         chatMsg.setFromid(msg.getData().getMine().getId());
         chatMsg.setTimestamp(System.currentTimeMillis());
-
-        messagingTemplate.convertAndSendToUser(msg.getData().getTo().getName(), "topic/chat", chatMsg);
+        messagingTemplate.convertAndSendToUser(msg.getData().getTo().getName(), "/topic/chat", chatMsg);
     }
 }

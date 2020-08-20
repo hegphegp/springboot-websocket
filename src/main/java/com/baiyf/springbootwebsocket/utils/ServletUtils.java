@@ -23,7 +23,8 @@ public class ServletUtils {
         Enumeration<String> headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
             String headerName = headers.nextElement();
-            logger.debug(headerName + "  ===>>>  " + request.getHeader(headerName));
+            System.out.println(headerName + "  ===>>>  " + request.getHeader(headerName));
+//            logger.debug(headerName + "  ===>>>  " + request.getHeader(headerName));
         }
     }
 

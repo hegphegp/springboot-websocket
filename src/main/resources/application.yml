@@ -5,7 +5,10 @@ spring.resources.static-locations: classpath:/
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://192.168.4.151:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
 spring:
   application:
     name: websocket
+#logging:
+#  level:
+#    root: debug
