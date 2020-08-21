@@ -23,8 +23,7 @@ public class ServletUtils {
         Enumeration<String> headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
             String headerName = headers.nextElement();
-            System.out.println(headerName + "  ===>>>  " + request.getHeader(headerName));
-//            logger.debug(headerName + "  ===>>>  " + request.getHeader(headerName));
+            logger.debug(headerName + "  ===>>>  " + request.getHeader(headerName));
         }
     }
 
@@ -74,7 +73,7 @@ public class ServletUtils {
     }
 
     // 获取最原始的http,https协议,以及host
-    private static String getOriginSchemeHost() {
+    public static String getOriginSchemeHost() {
         String originScheme = Optional.of(getOriginScheme()).orElse("http");
         String originHost = getOriginHost();
         return originScheme+"://"+originHost;

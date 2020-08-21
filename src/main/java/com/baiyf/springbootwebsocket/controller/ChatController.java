@@ -2,17 +2,15 @@ package com.baiyf.springbootwebsocket.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baiyf.springbootwebsocket.bean.*;
-import org.apache.shiro.SecurityUtils;
+import com.baiyf.springbootwebsocket.utils.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.apache.shiro.subject.Subject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,8 +25,8 @@ public class ChatController {
     @RequestMapping("/")
     public String index(HttpServletRequest request) {
         String basePath = (String) request.getAttribute("basePath");
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.isAuthenticated()) {
+        String username = (String) request.getSession().getAttribute("username");
+        if (StringUtils.hasText(username)) {
             return "redirect:"+basePath+"/chat";
         } else {
             return "redirect:"+basePath+"/login";
@@ -37,9 +35,8 @@ public class ChatController {
 
     @RequestMapping("/chat")
     public String chat(Model model) {
-
-        Subject subject = SecurityUtils.getSubject();
-        String userName = (String) subject.getPrincipal();
+        HttpServletRequest request = ServletUtils.getCurrentRequest();
+        String userName = (String) request.getSession().getAttribute("username");
 
         InfoBean infoMap = new InfoBean();
 
