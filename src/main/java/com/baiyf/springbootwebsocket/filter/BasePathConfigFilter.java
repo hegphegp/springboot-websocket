@@ -22,13 +22,21 @@ public class BasePathConfigFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // 如果用了 nginx作为请求入口，一定要配置
+        /**
+         *  proxy_set_header Host $http_host;
+         *  proxy_set_header X-Forwarded-Uri $uri;
+         *  proxy_set_header X-Real-IP $remote_addr;
+         *  proxy_set_header X-Forwarded-Proto $scheme;
+         *  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         */
         /**
          * zuul网关会自动封装 x-forwarded-host 参数
          * zuul网关不会自动封装 x-forwarded-uri 参数,要手动写代码补上去
          */
         String servletPath = request.getServletPath();
         if (!servletPath.startsWith("/ws/")) {
-            String basePath = StringUtils.hasText(request.getHeader("x-forwarded-host")) ? ServletUtils.getBasePathWhenRequestIsForwarded() : "";
+            String basePath = StringUtils.hasText(request.getHeader("x-forwarded-uri")) ? ServletUtils.getBasePathWhenRequestIsForwarded() : "";
             basePath += StringUtils.hasText(request.getContextPath()) ? request.getContextPath() : "";
             request.setAttribute("basePath", basePath);
         }
@@ -41,15 +49,6 @@ public class BasePathConfigFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        // 如果用了 nginx作为请求入口，一定要配置
-        /**
-         *  proxy_set_header Host $http_host;
-         *  proxy_set_header X-Forwarded-Uri $uri;
-         *  proxy_set_header X-Real-IP $remote_addr;
-         *  proxy_set_header X-Forwarded-Proto $scheme;
-         *  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-         */
-//        ServletUtils.printAllHeaders();
         filterChain.doFilter(request, response);
     }
 
